@@ -1,0 +1,38 @@
+name: Daily arXiv Digest
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 02:00 UTC = 04:00 Estonian time (EET winter)
+  workflow_dispatch:        # allows manual trigger from GitHub UI
+
+permissions:
+  contents: write           # needed to commit the generated HTML
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate digest
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/generate_digest.py
+
+      - name: Commit and push updated page
+        run: |
+          git config user.name  "arxiv-digest-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add docs/index.html
+          git diff --staged --quiet || git commit -m "digest: $(date -u +%Y-%m-%d)"
+          git push
