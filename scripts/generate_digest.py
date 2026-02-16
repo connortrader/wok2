@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""arXiv Morning Digest — daily paper briefing powered by Gemini."""
+"""arXiv Morning Digest — reads full paper text via arXiv HTML, powered by Gemini."""
 
 import json
 import os
 import re
-import sys
 import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
@@ -14,58 +13,63 @@ from google import genai
 from google.genai import types
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-QUANT_CATEGORIES = ["q-fin.CP", "q-fin.PM", "q-fin.ST", "q-fin.RM", "q-fin.TR"]
-AI_CATEGORIES    = ["cs.AI", "cs.LG"]
-HOURS_BACK       = 96
-MAX_QUANT        = 40
-MAX_AI           = 40
-GEMINI_MODEL     = "gemini-2.5-flash-lite"
-OUTPUT_FILE      = "docs/index.html"
+QUANT_CATEGORIES  = ["q-fin.CP", "q-fin.PM", "q-fin.ST", "q-fin.RM", "q-fin.TR"]
+AI_CATEGORIES     = ["cs.AI", "cs.LG"]
+HOURS_BACK        = 96
+MAX_QUANT         = 40
+MAX_AI            = 40
+GEMINI_MODEL      = "gemini-2.5-flash-lite"
+OUTPUT_FILE       = "docs/index.html"
+FULL_TEXT_TIMEOUT = 10    # seconds per paper HTML fetch
+FULL_TEXT_CHARS   = 5000  # chars extracted per paper
 
 TRADER_PROFILE = """
-You write a daily morning briefing for a retail quantitative trader. Be direct and concrete.
+You write a sharp, no-bullshit morning briefing for a retail quantitative trader.
+You have the FULL TEXT of each paper (intro + results + conclusion), not just the abstract.
+Use the ACTUAL numbers, findings, and methods from the paper — not vague summaries.
 
 TRADER PROFILE:
-- Trades US stocks only (no crypto, forex, options, futures, HFT, Japanese stocks)
+- Trades US stocks only. No crypto, forex, options, futures, HFT, non-US markets.
 - Uses RealTest (Marsten Parker) + Norgate end-of-day data (price, volume, fundamentals)
 - Goals: portfolio of diversified strategies, robust backtesting, signal generation
-- Python: intermediate level
-- Core interests: momentum, mean reversion, factor models, portfolio optimization, drawdown control
-- For AI papers: wants practical tools/agents for productivity, learning faster, longevity health findings
+- Python: intermediate. Can code moderately complex strategies.
+- Interests: momentum, mean reversion, factor models, portfolio optimization, drawdown control
+- AI interest: practical productivity tools, AI agents that work today, longevity/health findings
 
-WRITING RULES:
-- discovery: ONE sentence. What was actually found. Use numbers if the paper has them. Start with "They found..." or "Researchers built..." or "This paper shows..."
-- insight: ONE or TWO sentences. What this means in plain language. Why it matters to this specific trader. No academic jargon.
-- action: Be specific. Either:
-    - "Test this in RealTest: [exact concrete step]" — if implementable
-    - "Try this tool: [what to do]" — for AI papers with practical tools
-    - "Read the method: [what specific concept to learn]" — if too complex but worth knowing
-    - "Skip — [one reason why not relevant]" — if truly irrelevant
+WRITING RULES — be concrete, use numbers from the paper:
+  discovery:  One sentence. "They found X outperformed Y by Z% over N years."
+              Use real numbers from the paper. If no numbers, describe the method concisely.
+  insight:    1-2 sentences. What this means for this trader specifically.
+              Connect to their actual workflow (RealTest, US stocks, portfolio).
+  action:     Pick exactly one:
+              • "Test in RealTest: [specific step — what signal, what filter, what data]"
+              • "Try this tool: [tool name + what it does + link if mentioned]"
+              • "Learn this: [specific concept or method worth studying]"
+              • "Skip — [one concrete reason why not applicable]"
 
-SCORING (1-10):
-  Implementability (0-3): Can test with price/volume/fundamentals in RealTest?
-  Insight clarity (0-3): Clear measurable finding with evidence?
-  Robustness (0-2): Tested across multiple periods or conditions?
-  Novelty (0-2): Something this trader likely hasn't tried?
+SCORING (1-10, sum of):
+  Implementability (0-3): testable in RealTest with Norgate price/vol/fundamentals?
+  Finding quality  (0-3): specific, measurable result with evidence?
+  Robustness       (0-2): multiple periods or out-of-sample tested?
+  Novelty          (0-2): new idea for this trader?
 
-Return ONLY valid JSON. No markdown. No text outside the JSON.
-Structure:
-{"papers":[{"id":"...","title":"...","url":"...","category":"quant or ai","score":7,"discovery":"They found...","insight":"This means...","action":"Test this in RealTest: ...","can_implement":true,"tags":["momentum"]}]}
+Return ONLY valid JSON — no markdown, no extra text.
+{"papers":[{"id":"...","title":"...","url":"...","category":"quant or ai","score":7,
+"discovery":"They found...","insight":"This means...","action":"Test in RealTest: ...",
+"can_implement":true,"tags":["momentum"]}]}
 
 Sort by score descending.
-IMPORTANT: Only analyze papers I provided. Do not add papers from your own knowledge.
+ONLY analyze papers I provided. Do NOT add papers from your own knowledge.
 """.strip()
 
 
 # ── arXiv fetch ────────────────────────────────────────────────────────────────
 def fetch_arxiv(categories: list, max_results: int = 80) -> list:
     cat_query = "+OR+".join(f"cat:{c}" for c in categories)
-    url = (
-        f"https://export.arxiv.org/api/query"
-        f"?search_query={cat_query}"
-        f"&sortBy=submittedDate&sortOrder=descending"
-        f"&max_results={max_results}"
-    )
+    url = (f"https://export.arxiv.org/api/query"
+           f"?search_query={cat_query}"
+           f"&sortBy=submittedDate&sortOrder=descending"
+           f"&max_results={max_results}")
     resp = requests.get(url, timeout=30)
     resp.raise_for_status()
     ns = {"a": "http://www.w3.org/2005/Atom"}
@@ -96,16 +100,70 @@ def filter_recent(papers: list, hours: int) -> list:
     return result
 
 
+# ── Full text extraction ───────────────────────────────────────────────────────
+def extract_text(html: str) -> str:
+    """Strip HTML and extract intro + results/conclusion from arXiv paper."""
+    # Remove noise
+    html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
+    html = re.sub(r'<style[^>]*>.*?</style>',  '', html, flags=re.DOTALL | re.IGNORECASE)
+    html = re.sub(r'<math[^>]*>.*?</math>',    '', html, flags=re.DOTALL | re.IGNORECASE)
+    html = re.sub(r'<figure[^>]*>.*?</figure>', '', html, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r'<[^>]+>', ' ', html)
+    text = re.sub(r'\s+', ' ', text).strip()
+
+    if len(text) < 300:
+        return text
+
+    t_lower = text.lower()
+
+    # Find the best conclusion/results section (must be in second half)
+    midpoint = len(text) // 2
+    markers = [
+        'conclusion', 'conclusions', 'in summary', 'we conclude',
+        'experimental results', 'our results', 'findings', 'we show that',
+        'we find that', 'we demonstrate', 'results show',
+    ]
+    best_idx = -1
+    for m in markers:
+        idx = t_lower.find(m, midpoint)
+        if idx > 0 and (best_idx == -1 or idx < best_idx):
+            best_idx = idx
+
+    intro       = text[:1800]
+    conclusion  = text[best_idx: best_idx + 3000] if best_idx > 0 else text[-3000:]
+    combined    = intro + "\n\n[...]\n\n" + conclusion
+    return combined[:FULL_TEXT_CHARS]
+
+
+def fetch_full_text(paper: dict) -> tuple:
+    """Try to get full paper text from arXiv HTML. Returns (content, is_full_text)."""
+    base_id = re.sub(r'v\d+$', '', paper['id'])
+    url = f"https://arxiv.org/html/{base_id}"
+    try:
+        resp = requests.get(url, timeout=FULL_TEXT_TIMEOUT,
+                            headers={"User-Agent": "arxiv-digest-bot/1.0 (research tool)"})
+        if resp.status_code == 200 and len(resp.text) > 3000:
+            extracted = extract_text(resp.text)
+            if len(extracted) > 400:
+                return (extracted, True)
+    except Exception:
+        pass
+    return (paper['abstract'][:800], False)
+
+
 # ── Gemini ─────────────────────────────────────────────────────────────────────
-def build_prompt(quant: list, ai: list) -> str:
-    lines = [TRADER_PROFILE, "", "=" * 60, "QUANTITATIVE FINANCE PAPERS", "=" * 60]
-    for p in quant:
-        lines += [f"\nID: {p['id']}", f"Title: {p['title']}",
-                  f"URL: {p['url']}", f"Abstract: {p['abstract'][:700]}"]
-    lines += ["", "=" * 60, "AI / MACHINE LEARNING PAPERS", "=" * 60]
-    for p in ai:
-        lines += [f"\nID: {p['id']}", f"Title: {p['title']}",
-                  f"URL: {p['url']}", f"Abstract: {p['abstract'][:500]}"]
+def build_prompt(papers: list) -> str:
+    lines = [TRADER_PROFILE, ""]
+    for p in papers:
+        source_label = "[FULL TEXT]" if p.get("is_full") else "[ABSTRACT ONLY]"
+        lines += [
+            "=" * 55,
+            f"{source_label} {p.get('category','').upper()} | ID: {p['id']}",
+            f"Title: {p['title']}",
+            f"URL: {p['url']}",
+            f"Content:\n{p['content']}",
+            "",
+        ]
     return "\n".join(lines)
 
 
@@ -130,73 +188,51 @@ def call_gemini(prompt: str) -> dict:
     return json.loads(text)
 
 
-# ── HTML ───────────────────────────────────────────────────────────────────────
-def score_label(score: int) -> tuple:
-    """Returns (bg_color, text_color, label)"""
-    if score >= 8: return ("#e8f5e9", "#2e7d32", f"{score}/10")
-    if score >= 6: return ("#fff8e1", "#e65100", f"{score}/10")
-    if score >= 4: return ("#f5f5f5", "#757575", f"{score}/10")
-    return ("#f5f5f5", "#bdbdbd", f"{score}/10")
+# ── HTML rendering ─────────────────────────────────────────────────────────────
+def score_style(score: int) -> tuple:
+    if score >= 8: return ("#e8f5e9", "#2e7d32")
+    if score >= 6: return ("#fff8e1", "#e65100")
+    if score >= 4: return ("#f5f5f5", "#757575")
+    return ("#fafafa", "#bdbdbd")
 
 
 def render_card(p: dict) -> str:
     score = p.get("score", 0)
-    bg, fg, lbl = score_label(score)
+    bg, fg = score_style(score)
     cat = p.get("category", "")
-    cat_badge = "QUANT" if cat == "quant" else "AI"
+    cat_label = "QUANT" if cat == "quant" else "AI"
     cat_color = "#1565c0" if cat == "quant" else "#6a1b9a"
     can = p.get("can_implement", False)
-    impl_text = "Implementable in RealTest" if can else "Not directly implementable"
-    impl_color = "#2e7d32" if can else "#757575"
+    impl_color = "#2e7d32" if can else "#9e9e9e"
+    impl_text  = "Implementable in RealTest" if can else "Not directly implementable"
     tags = " ".join(
-        f'<span style="display:inline-block;background:#f0f0f0;color:#666;'
-        f'padding:1px 7px;border-radius:3px;font-size:11px;">{t}</span>'
+        f'<span style="background:#f0f0f0;color:#777;padding:1px 7px;border-radius:3px;font-size:11px;">{t}</span>'
         for t in p.get("tags", [])
     )
-
-    discovery = p.get("discovery", "")
-    insight = p.get("insight", "")
-    action = p.get("action", "")
-
-    return f"""
-<div style="border:1px solid #e0e0e0;border-radius:6px;padding:20px 22px;margin-bottom:14px;background:#fff;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <span style="background:{bg};color:{fg};font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">{lbl}</span>
-    <span style="background:none;color:{cat_color};font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid {cat_color};padding:1px 7px;border-radius:3px;">{cat_badge}</span>
+    return f"""<div style="background:#fff;border:1px solid #e8e8e8;border-left:3px solid {fg};border-radius:6px;padding:20px 22px;margin-bottom:12px;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <span style="background:{bg};color:{fg};font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">{score}/10</span>
+    <span style="color:{cat_color};font-size:11px;font-weight:700;letter-spacing:1px;border:1px solid {cat_color};padding:1px 7px;border-radius:3px;">{cat_label}</span>
     <a href="{p.get('url','#')}" target="_blank" rel="noopener"
-       style="color:#1a1a1a;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;flex:1;min-width:200px;">{p.get('title','')}</a>
+       style="color:#111;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;">{p.get('title','')}</a>
   </div>
-
-  <table style="width:100%;border-collapse:collapse;">
-    <tr>
-      <td style="width:72px;padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Leiti</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:14px;color:#1a1a1a;line-height:1.6;">{discovery}</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida see tahendab</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:13px;color:#444;line-height:1.6;">{insight}</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida teha</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;">
-        <span style="font-size:13px;color:#1b5e20;line-height:1.6;font-weight:500;">{action}</span>
-      </td>
-    </tr>
-  </table>
-
-  <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+  <div style="border-top:1px solid #f2f2f2;padding-top:12px;">
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:0;margin-bottom:2px;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Avastati</span>
+      <span style="font-size:14px;color:#111;line-height:1.65;padding:10px 0;border-bottom:1px solid #f5f5f5;">{p.get('discovery','')}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:0;margin-bottom:2px;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Mida see tahendab</span>
+      <span style="font-size:13px;color:#444;line-height:1.65;padding:10px 0;border-bottom:1px solid #f5f5f5;">{p.get('insight','')}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:0;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Mida teha</span>
+      <span style="font-size:13px;color:#1b5e20;line-height:1.65;padding:10px 0;font-weight:500;">{p.get('action','')}</span>
+    </div>
+  </div>
+  <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
     <span style="font-size:11px;color:{impl_color};">● {impl_text}</span>
-    <span style="color:#ddd;">|</span>
+    <span style="color:#e0e0e0;">|</span>
     {tags}
   </div>
 </div>"""
@@ -204,42 +240,34 @@ def render_card(p: dict) -> str:
 
 def render_row(p: dict) -> str:
     score = p.get("score", 0)
-    bg, fg, lbl = score_label(score)
-    title = p.get("title", "")
-    if len(title) > 100:
-        title = title[:100] + "…"
-    action = p.get("action", "")
-    if len(action) > 120:
-        action = action[:120] + "…"
-    return f"""
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:{bg};color:{fg};font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">{lbl}</span>
+    bg, fg = score_style(score)
+    title = p.get("title", "")[:105]
+    action = p.get("action", "")[:130]
+    return f"""<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:{bg};color:{fg};font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">{score}/10</span>
   <div>
     <a href="{p.get('url','#')}" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">{title}</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">{action}</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">{title}{'…' if len(p.get('title',''))>105 else ''}</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">{action}{'…' if len(p.get('action',''))>130 else ''}</div>
   </div>
 </div>"""
 
 
-def generate_html(data: dict, quant_count: int, ai_count: int) -> str:
+def generate_html(data: dict, quant_count: int, ai_count: int,
+                  full_text_count: int, total_papers: int) -> str:
     papers  = data.get("papers", [])
     top     = [p for p in papers if p.get("score", 0) >= 7]
     quant   = [p for p in papers if p.get("category") == "quant" and p.get("score", 0) < 7]
     ai_list = [p for p in papers if p.get("category") == "ai"    and p.get("score", 0) < 7]
 
-    def section(items, card_threshold=5):
+    def section(items, card_min=5):
         if not items:
-            return '<p style="color:#bbb;font-size:13px;padding:12px 0;">No papers in this section.</p>'
-        return "\n".join(
-            render_card(p) if p.get("score", 0) >= card_threshold else render_row(p)
-            for p in items
-        )
+            return '<p style="color:#ccc;font-size:13px;padding:12px 0;">No papers in this section.</p>'
+        return "\n".join(render_card(p) if p.get("score",0) >= card_min else render_row(p) for p in items)
 
     date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
     weekday  = datetime.now(timezone.utc).strftime("%A")
     time_str = datetime.now(timezone.utc).strftime("%H:%M UTC")
-    top_count = len(top)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -248,60 +276,38 @@ def generate_html(data: dict, quant_count: int, ai_count: int) -> str:
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morning Digest · {date_str}</title>
 <style>
-  * {{ margin:0; padding:0; box-sizing:border-box }}
-  body {{
-    background: #f7f7f5;
-    color: #1a1a1a;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    padding: 40px 24px;
-    max-width: 740px;
-    margin: 0 auto;
-    line-height: 1.5;
-  }}
-  h2 {{
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #999;
-    margin: 40px 0 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e0e0e0;
-  }}
-  @media (max-width: 600px) {{
-    body {{ padding: 20px 16px; }}
-  }}
+  *{{margin:0;padding:0;box-sizing:border-box}}
+  body{{background:#f6f6f4;color:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;padding:40px 24px;max-width:760px;margin:0 auto;line-height:1.5}}
+  h2{{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:#aaa;margin:44px 0 16px;padding-bottom:10px;border-bottom:1px solid #e4e4e4}}
+  @media(max-width:600px){{body{{padding:20px 14px}}}}
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div style="border-bottom:2px solid #1a1a1a;padding-bottom:20px;margin-bottom:8px;">
-  <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">
-    {weekday} · arXiv Morning Digest
-  </div>
-  <div style="font-size:30px;font-weight:700;letter-spacing:-0.5px;">{date_str}</div>
-  <div style="margin-top:12px;display:flex;gap:20px;flex-wrap:wrap;">
-    <span style="font-size:13px;color:#555;">📊 {quant_count} quant papers</span>
-    <span style="font-size:13px;color:#555;">🤖 {ai_count} AI papers</span>
-    <span style="font-size:13px;color:#555;">⭐ {top_count} top picks</span>
-    <span style="font-size:13px;color:#999;">Generated {time_str}</span>
+<div style="border-bottom:2px solid #111;padding-bottom:20px;margin-bottom:4px;">
+  <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">{weekday} · arXiv Morning Digest</div>
+  <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:14px;">{date_str}</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#666;">
+    <span>📊 {quant_count} quant</span>
+    <span>🤖 {ai_count} AI</span>
+    <span>📄 {full_text_count}/{total_papers} full papers read</span>
+    <span>⭐ {len(top)} top picks</span>
+    <span style="color:#bbb;">Generated {time_str}</span>
   </div>
 </div>
 
 <h2>Top Picks — Worth your time</h2>
-{section(top, card_threshold=0) if top else '<p style="color:#bbb;font-size:13px;padding:12px 0;">No high-scoring papers today.</p>'}
+{section(top, card_min=0) if top else '<p style="color:#ccc;font-size:13px;padding:12px 0;">No high-scoring papers today.</p>'}
 
-<h2>Quantitative Finance — All papers</h2>
+<h2>Quantitative Finance — Remaining</h2>
 {section(quant)}
 
-<h2>AI & Automation — All papers</h2>
+<h2>AI & Automation — Remaining</h2>
 {section(ai_list)}
 
-<div style="margin-top:56px;padding-top:16px;border-top:1px solid #e0e0e0;font-size:11px;color:#bbb;text-align:center;">
-  Auto-generated · Gemini {GEMINI_MODEL} · arXiv API · Last 96 hours
+<div style="margin-top:56px;padding-top:16px;border-top:1px solid #e8e8e8;font-size:10px;color:#ccc;text-align:center;">
+  Auto-generated · Gemini {GEMINI_MODEL} · arXiv API · Last {HOURS_BACK}h
 </div>
-
 </body>
 </html>"""
 
@@ -312,34 +318,55 @@ def ts() -> str:
 
 
 def main() -> None:
+    # 1. Fetch abstracts
     print(f"[{ts()}] Fetching quant papers...")
     quant_raw = fetch_arxiv(QUANT_CATEGORIES, max_results=80)
     quant_new = filter_recent(quant_raw, HOURS_BACK)[:MAX_QUANT]
-    print(f"         -> {len(quant_new)} papers in last {HOURS_BACK}h")
+    print(f"         -> {len(quant_new)} papers")
+    time.sleep(2)
 
-    time.sleep(3)
-
-    print(f"[{ts()}] Fetching AI/ML papers...")
+    print(f"[{ts()}] Fetching AI papers...")
     ai_raw = fetch_arxiv(AI_CATEGORIES, max_results=100)
     ai_new = filter_recent(ai_raw, HOURS_BACK)[:MAX_AI]
-    print(f"         -> {len(ai_new)} papers in last {HOURS_BACK}h")
+    print(f"         -> {len(ai_new)} papers")
 
     if not quant_new and not ai_new:
-        print("No recent papers found. Generating empty page.")
-        html = generate_html({"papers": []}, 0, 0)
+        print("No recent papers. Generating empty page.")
+        html = generate_html({"papers": []}, 0, 0, 0, 0)
         os.makedirs("docs", exist_ok=True)
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as fh:
-            fh.write(html)
+        open(OUTPUT_FILE, "w", encoding="utf-8").write(html)
         return
 
-    total = len(quant_new) + len(ai_new)
-    print(f"[{ts()}] Sending {total} papers to Gemini...")
-    prompt = build_prompt(quant_new, ai_new)
+    # 2. Fetch full paper text for all papers
+    all_papers = (
+        [dict(p, category="quant") for p in quant_new] +
+        [dict(p, category="ai")    for p in ai_new]
+    )
+    total = len(all_papers)
+    full_count = 0
+
+    print(f"[{ts()}] Fetching full text for {total} papers...")
+    for i, p in enumerate(all_papers):
+        content, is_full = fetch_full_text(p)
+        p["content"]  = content
+        p["is_full"]  = is_full
+        if is_full:
+            full_count += 1
+        status = "full" if is_full else "abstract"
+        print(f"         [{i+1:2d}/{total}] {status} — {p['title'][:55]}...")
+        time.sleep(0.3)  # polite to arXiv
+
+    print(f"[{ts()}] Full text: {full_count}/{total} papers")
+
+    # 3. Gemini analysis
+    print(f"[{ts()}] Sending to Gemini ({GEMINI_MODEL})...")
+    prompt = build_prompt(all_papers)
     result = call_gemini(prompt)
     analyzed = len(result.get("papers", []))
     print(f"         -> {analyzed} papers analyzed")
 
-    html = generate_html(result, len(quant_new), len(ai_new))
+    # 4. Generate HTML
+    html = generate_html(result, len(quant_new), len(ai_new), full_count, total)
     os.makedirs("docs", exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as fh:
         fh.write(html)
