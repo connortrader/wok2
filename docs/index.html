@@ -5,743 +5,419 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morning Digest · February 16, 2026</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box }
-  body {
-    background: #f7f7f5;
-    color: #1a1a1a;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    padding: 40px 24px;
-    max-width: 740px;
-    margin: 0 auto;
-    line-height: 1.5;
-  }
-  h2 {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #999;
-    margin: 40px 0 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  @media (max-width: 600px) {
-    body { padding: 20px 16px; }
-  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#f6f6f4;color:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;padding:40px 24px;max-width:760px;margin:0 auto;line-height:1.5}
+  h2{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:#aaa;margin:44px 0 16px;padding-bottom:10px;border-bottom:1px solid #e4e4e4}
+  @media(max-width:600px){body{padding:20px 14px}}
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div style="border-bottom:2px solid #1a1a1a;padding-bottom:20px;margin-bottom:8px;">
-  <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">
-    Monday · arXiv Morning Digest
-  </div>
-  <div style="font-size:30px;font-weight:700;letter-spacing:-0.5px;">February 16, 2026</div>
-  <div style="margin-top:12px;display:flex;gap:20px;flex-wrap:wrap;">
-    <span style="font-size:13px;color:#555;">📊 2 quant papers</span>
-    <span style="font-size:13px;color:#555;">🤖 40 AI papers</span>
-    <span style="font-size:13px;color:#555;">⭐ 1 top picks</span>
-    <span style="font-size:13px;color:#999;">Generated 18:28 UTC</span>
+<div style="border-bottom:2px solid #111;padding-bottom:20px;margin-bottom:4px;">
+  <div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Monday · arXiv Morning Digest</div>
+  <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:14px;">February 16, 2026</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#666;">
+    <span>📊 2 quant</span>
+    <span>🤖 40 AI</span>
+    <span>📄 35/42 full papers read</span>
+    <span>⭐ 0 top picks</span>
+    <span style="color:#bbb;">Generated 18:53 UTC</span>
   </div>
 </div>
 
 <h2>Top Picks — Worth your time</h2>
+<p style="color:#ccc;font-size:13px;padding:12px 0;">No high-scoring papers today.</p>
 
-<div style="border:1px solid #e0e0e0;border-radius:6px;padding:20px 22px;margin-bottom:14px;background:#fff;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <span style="background:#fff8e1;color:#e65100;font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">7/10</span>
-    <span style="background:none;color:#1565c0;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid #1565c0;padding:1px 7px;border-radius:3px;">QUANT</span>
-    <a href="http://arxiv.org/abs/2602.12490v1" target="_blank" rel="noopener"
-       style="color:#1a1a1a;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;flex:1;min-width:200px;">Transformer-based CoVaR: Systemic Risk in Textual Information</a>
-  </div>
-
-  <table style="width:100%;border-collapse:collapse;">
-    <tr>
-      <td style="width:72px;padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Leiti</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:14px;color:#1a1a1a;line-height:1.6;">Researchers built a Transformer-based method to estimate Conditional Value-at-Risk (CoVaR) by integrating financial news text with market data, showing improved estimates and providing error bounds.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida see tahendab</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:13px;color:#444;line-height:1.6;">This approach could provide a more nuanced understanding of systemic risk by incorporating qualitative information from news, potentially leading to better risk management and strategy adjustments.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida teha</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;">
-        <span style="font-size:13px;color:#1b5e20;line-height:1.6;font-weight:500;">Read the method: Understand how Transformer models process textual data and integrate it with market returns for risk estimation.</span>
-      </td>
-    </tr>
-  </table>
-
-  <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;color:#757575;">● Not directly implementable</span>
-    <span style="color:#ddd;">|</span>
-    <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">risk management</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">nlp</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">systemic risk</span>
-  </div>
-</div>
-
-<h2>Quantitative Finance — All papers</h2>
-
-<div style="border:1px solid #e0e0e0;border-radius:6px;padding:20px 22px;margin-bottom:14px;background:#fff;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <span style="background:#fff8e1;color:#e65100;font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">6/10</span>
-    <span style="background:none;color:#1565c0;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid #1565c0;padding:1px 7px;border-radius:3px;">QUANT</span>
-    <a href="http://arxiv.org/abs/2602.13104v1" target="_blank" rel="noopener"
-       style="color:#1a1a1a;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;flex:1;min-width:200px;">Random Forests as Statistical Procedures: Design, Variance, and Dependence</a>
-  </div>
-
-  <table style="width:100%;border-collapse:collapse;">
-    <tr>
-      <td style="width:72px;padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Leiti</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:14px;color:#1a1a1a;line-height:1.6;">This paper presents a design-based formulation of random forests, treating each tree as a randomized conditional regression function, and derives an exact variance identity.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida see tahendab</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:13px;color:#444;line-height:1.6;">Understanding random forests from a statistical design perspective can lead to better insights into their variance and dependence structures, potentially improving model robustness and interpretability for trading strategies.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida teha</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;">
-        <span style="font-size:13px;color:#1b5e20;line-height:1.6;font-weight:500;">Read the method: Study the statistical design-based formulation of random forests and its implications for variance analysis.</span>
-      </td>
-    </tr>
-  </table>
-
-  <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;color:#757575;">● Not directly implementable</span>
-    <span style="color:#ddd;">|</span>
-    <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">machine learning</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">statistics</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">random forests</span>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">0/10</span>
+<h2>Quantitative Finance — Remaining</h2>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.12770v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Efficient Monte Carlo Valuation of Corporate Bonds in Financial Networks</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Skip — This paper focuses on corporate bond valuation in complex networks, which is outside the scope of US stock tradin…</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Efficient Monte Carlo Valuation of Corporate Bonds in Financial Networks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Skip — Focuses on corporate bonds and complex financial networks, not directly applicable to US stock trading strategies.</div>
   </div>
 </div>
-
-<h2>AI & Automation — All papers</h2>
-
-<div style="border:1px solid #e0e0e0;border-radius:6px;padding:20px 22px;margin-bottom:14px;background:#fff;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <span style="background:#fff8e1;color:#e65100;font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">6/10</span>
-    <span style="background:none;color:#6a1b9a;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid #6a1b9a;padding:1px 7px;border-radius:3px;">AI</span>
-    <a href="http://arxiv.org/abs/2602.13156v1" target="_blank" rel="noopener"
-       style="color:#1a1a1a;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;flex:1;min-width:200px;">In-Context Autonomous Network Incident Response: An End-to-End Large Language Model Agent Approach</a>
-  </div>
-
-  <table style="width:100%;border-collapse:collapse;">
-    <tr>
-      <td style="width:72px;padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Leiti</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:14px;color:#1a1a1a;line-height:1.6;">Researchers developed an end-to-end LLM agent for autonomous network incident response that learns from system logs and alerts without requiring a simulated environment.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida see tahendab</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:13px;color:#444;line-height:1.6;">This LLM agent approach could be adapted to automate aspects of trading system monitoring and incident response, potentially improving uptime and reducing manual intervention during market events.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida teha</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;">
-        <span style="font-size:13px;color:#1b5e20;line-height:1.6;font-weight:500;">Try this tool: Explore using LLM agents for automating responses to alerts or anomalies in trading infrastructure.</span>
-      </td>
-    </tr>
-  </table>
-
-  <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;color:#757575;">● Not directly implementable</span>
-    <span style="color:#ddd;">|</span>
-    <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">ai agent</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">automation</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">productivity</span>
-  </div>
-</div>
-
-<div style="border:1px solid #e0e0e0;border-radius:6px;padding:20px 22px;margin-bottom:14px;background:#fff;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">5/10</span>
-    <span style="background:none;color:#6a1b9a;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid #6a1b9a;padding:1px 7px;border-radius:3px;">AI</span>
-    <a href="http://arxiv.org/abs/2602.13112v1" target="_blank" rel="noopener"
-       style="color:#1a1a1a;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;flex:1;min-width:200px;">AdaGrad-Diff: A New Version of the Adaptive Gradient Algorithm</a>
-  </div>
-
-  <table style="width:100%;border-collapse:collapse;">
-    <tr>
-      <td style="width:72px;padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Leiti</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:14px;color:#1a1a1a;line-height:1.6;">A new adaptive gradient method, AdaGrad-Diff, is proposed that uses cumulative squared norms of gradient differences instead of gradient norms for adaptation.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida see tahendab</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:13px;color:#444;line-height:1.6;">This novel adaptation mechanism in gradient descent could lead to more stable and efficient training of machine learning models used in quantitative trading, potentially improving signal generation or optimization.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida teha</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;">
-        <span style="font-size:13px;color:#1b5e20;line-height:1.6;font-weight:500;">Read the method: Understand the mathematical formulation and benefits of using gradient differences for adaptive optimization.</span>
-      </td>
-    </tr>
-  </table>
-
-  <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;color:#757575;">● Not directly implementable</span>
-    <span style="color:#ddd;">|</span>
-    <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">optimization</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">machine learning</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">gradient descent</span>
-  </div>
-</div>
-
-<div style="border:1px solid #e0e0e0;border-radius:6px;padding:20px 22px;margin-bottom:14px;background:#fff;">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:2px 10px;border-radius:4px;font-size:13px;">5/10</span>
-    <span style="background:none;color:#6a1b9a;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid #6a1b9a;padding:1px 7px;border-radius:3px;">AI</span>
-    <a href="http://arxiv.org/abs/2602.13042v1" target="_blank" rel="noopener"
-       style="color:#1a1a1a;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;flex:1;min-width:200px;">GPTZero: Robust Detection of LLM-Generated Texts</a>
-  </div>
-
-  <table style="width:100%;border-collapse:collapse;">
-    <tr>
-      <td style="width:72px;padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Leiti</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:14px;color:#1a1a1a;line-height:1.6;">GPTZero is introduced as a state-of-the-art solution for detecting LLM-generated text, addressing concerns about misinformation and authenticity.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida see tahendab</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;border-bottom:1px solid #f0f0f0;">
-        <span style="font-size:13px;color:#444;line-height:1.6;">Understanding how LLM-generated text can be detected is crucial for maintaining the integrity of information sources used in trading research and for identifying potential manipulation.</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px 8px 0;vertical-align:top;">
-        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#999;">Mida teha</span>
-      </td>
-      <td style="padding:8px 0;vertical-align:top;">
-        <span style="font-size:13px;color:#1b5e20;line-height:1.6;font-weight:500;">Try this tool: Use GPTZero or similar tools to evaluate the authenticity of research papers or market commentary.</span>
-      </td>
-    </tr>
-  </table>
-
-  <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;color:#757575;">● Not directly implementable</span>
-    <span style="color:#ddd;">|</span>
-    <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">ai detection</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">productivity</span> <span style="display:inline-block;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:3px;font-size:11px;">information integrity</span>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">4/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
   <div>
-    <a href="http://arxiv.org/abs/2602.13174v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Learning functional components of PDEs from data using neural networks</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Investigate how neural networks are embedded within PDEs to learn unknown functions from data.</div>
+    <a href="http://arxiv.org/abs/2602.12490v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Transformer-based CoVaR: Systemic Risk in Textual Information</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Transformer-based CoVaR estimation and the integration of textual data with market returns.</div>
   </div>
 </div>
 
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">4/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13035v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Look Inward to Explore Outward: Learning Temperature Policy from LLM Internal States via Hierarchica…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand how hierarchical RL is used to learn adaptive sampling temperatures in LLMs.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">4/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13061v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Diverging Flows: Detecting Extrapolations in Conditional Generation</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Learn about the 'Diverging Flows' technique for detecting extrapolation in generative models.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13098v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Barron-Wiener-Laguerre models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Explore the Barron-Wiener-Laguerre models for causal operator learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
+<h2>AI & Automation — Remaining</h2>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13194v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Semantic Chunking and the Entropy of Natural Language</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the statistical model for semantic chunking and its relation to language entropy.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Semantic Chunking and the Entropy of Natural Language</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Semantic chunking and its application to measuring language entropy.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
-    <a href="http://arxiv.org/abs/2602.13136v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Order Matters in Retrosynthesis: Structure-aware Generation via Reaction-Center-Guided Discrete Flow…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand how positional inductive bias and reaction centers are used for structure-aware generation.</div>
+    <a href="http://arxiv.org/abs/2602.13177v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Improved Regret Guarantees for Online Mirror Descent using a Portfolio of Mirror Maps</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: The concept of 'portfolio of mirror maps' in online convex optimization and its implications for adaptive strategy sel…</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13151v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Quantization-Robust LLM Unlearning via Low-Rank Adaptation</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Investigate how Low-Rank Adaptation is used to achieve quantization-robust LLM unlearning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13191v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">CoPE-VideoLM: Codec Primitives For Efficient Video Language Models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand how video codec primitives are leveraged for efficient Video Language Models.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13103v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">R-Diverse: Mitigating Diversity Illusion in Self-Play LLM Training</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Learn about the 'Diversity Illusion' and the R-Diverse mitigation strategy in LLM self-play.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13106v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Which Algorithms Can Graph Neural Networks Learn?</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the theoretical underpinnings of what algorithms GNNs can learn.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13073v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">LCSB: Layer-Cyclic Selective Backpropagation for Memory-Efficient On-Device LLM Fine-Tuning</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the Layer-Cyclic Selective Backpropagation (LCSB) mechanism for memory-efficient fine-tuning…</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13069v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Memory-Efficient Structured Backpropagation for On-Device LLM Fine-Tuning</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study Memory-efficient Structured Backpropagation (MeSP) and its exploitation of LoRA structure.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13047v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Can we trust AI to detect healthy multilingual English speakers among the cognitively impaired cohor…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Examine the methodology for investigating AI bias in speech analysis.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13045v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Geometric Manifold Rectification for Imbalanced Learning</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the geometric perspective on imbalanced learning and manifold rectification.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13040v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">TCRL: Temporal-Coupled Adversarial Training for Robust Constrained Reinforcement Learning in Worst-C…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study Temporal-Coupled Adversarial Training (TCRL) for robust constrained reinforcement learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">3/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13030v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Resource-Efficient Gesture Recognition through Convexified Attention</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the convexified attention mechanism for resource-efficient applications.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13165v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Asynchronous Verified Semantic Caching for Tiered LLM Architectures</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Learn about asynchronous verified semantic caching for LLM architectures.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13168v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Realistic Face Reconstruction from Facial Embeddings via Diffusion Models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the face embedding mapping (FEM) framework and its use of diffusion models.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13166v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Optimal Take-off under Fuzzy Clearances</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the integration of optimal control and fuzzy logic for adaptive constraint handling.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13155v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Learning to Approximate Uniform Facility Location via Graph Neural Networks</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Investigate how GNNs are used for approximating solutions to combinatorial optimization problems.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Learning to Approximate Uniform Facility Location via Graph Neural Networks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: How Graph Neural Networks can be applied to combinatorial optimization problems like facility location.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
-    <a href="http://arxiv.org/abs/2602.13135v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Constrained Assumption-Based Argumentation Frameworks</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the Constrained Assumption-Based Argumentation (CABA) framework.</div>
+    <a href="http://arxiv.org/abs/2602.13151v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Quantization-Robust LLM Unlearning via Low-Rank Adaptation</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Try this tool: LoRA (Low-Rank Adaptation) for efficient fine-tuning and potentially for managing LLM-based productivity tools.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13128v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Eventizing Traditionally Opaque Binary Neural Networks as 1-safe Petri net Models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Explore the eventization of Binary Neural Networks using Petri nets.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13110v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">SCOPE: Selective Conformal Optimized Pairwise LLM Judging</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the SCOPE framework for conformal pairwise LLM evaluation.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13075v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Unified Multi-Domain Graph Pre-training for Homogeneous and Heterogeneous Graphs via Domain-Specific…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the domain-specific expert encoding for unified graph pre-training.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13055v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Curriculum-DPO++: Direct Preference Optimization via Data and Model Curricula for Text-to-Image Gene…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Learn about Curriculum-DPO++ and the application of curricula in preference optimization.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13052v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Quantization-Aware Collaborative Inference for Large Embodied AI Models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study quantization-aware collaborative inference for large AI models.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">2/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13033v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Buy versus Build an LLM: A Decision Framework for Governments</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Review the decision framework for 'buy versus build' LLM strategies.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13093v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Consistency of Large Reasoning Models Under Multi-Turn Attacks</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the evaluation of reasoning models under multi-turn adversarial attacks.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13088v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">How cyborg propaganda reshapes collective action</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Skip — This paper discusses social and political manipulation, not directly applicable to trading strategies.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13087v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">EXCODER: EXplainable Classification Of DiscretE time series Representations</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study EXCODER for explainable classification of discrete time series representations.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13071v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Bus-Conditioned Zero-Shot Trajectory Generation via Task Arithmetic</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand zero-shot trajectory generation and task arithmetic.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13062v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Backdoor Attacks on Contrastive Continual Learning for IoT Systems</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study backdoor attacks on contrastive continual learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13197v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Imitating What Works: Simulation-Filtered Modular Policy Learning from Human Videos</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the simulation-filtered modular policy learning approach.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13140v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">FlashSchNet: Fast and Accurate Coarse-Grained Neural Network Molecular Dynamics</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the IO-aware optimization techniques in FlashSchNet for GNN-MD.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">FlashSchNet: Fast and Accurate Coarse-Grained Neural Network Molecular Dynamics</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: IO-aware reformulation and fused computation techniques for accelerating neural network simulations.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13131v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Learning to Learn with Differentiable Physics</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Investigate the integration of differentiable physics with meta-learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13115v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Learning to Learn with Differentiable Physics</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Investigate the integration of differentiable physics with meta-learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13098v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Barron-Wiener-Laguerre models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Explore the Barron-Wiener-Laguerre models for causal operator learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13088v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">How cyborg propaganda reshapes collective action</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Skip — This paper discusses social and political manipulation, not directly applicable to trading strategies.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13087v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">EXCODER: EXplainable Classification Of DiscretE time series Representations</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study EXCODER for explainable classification of discrete time series representations.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13071v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Bus-Conditioned Zero-Shot Trajectory Generation via Task Arithmetic</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand zero-shot trajectory generation and task arithmetic.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13062v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Backdoor Attacks on Contrastive Continual Learning for IoT Systems</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study backdoor attacks on contrastive continual learning.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13197v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Imitating What Works: Simulation-Filtered Modular Policy Learning from Human Videos</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the simulation-filtered modular policy learning approach.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13140v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">FlashSchNet: Fast and Accurate Coarse-Grained Neural Network Molecular Dynamics</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the IO-aware optimization techniques in FlashSchNet for GNN-MD.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13136v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Order Matters in Retrosynthesis: Structure-aware Generation via Reaction-Center-Guided Discrete Flow…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand how positional inductive bias and reaction centers are used for structure-aware generation.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Order Matters in Retrosynthesis: Structure-aware Generation via Reaction-Center-Guided Discrete Flow Matc…</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: The concept of 'reaction-center-guided discrete flow matching' and its implications for order-aware sequence generatio…</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
-  <div>
-    <a href="http://arxiv.org/abs/2602.13135v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Constrained Assumption-Based Argumentation Frameworks</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the Constrained Assumption-Based Argumentation (CABA) framework.</div>
-  </div>
-</div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13128v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Eventizing Traditionally Opaque Binary Neural Networks as 1-safe Petri net Models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Explore the eventization of Binary Neural Networks using Petri nets.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Eventizing Traditionally Opaque Binary Neural Networks as 1-safe Petri net Models</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Using Petri nets for formal verification and analysis of neural network behavior.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
-    <a href="http://arxiv.org/abs/2602.13110v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">SCOPE: Selective Conformal Optimized Pairwise LLM Judging</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the SCOPE framework for conformal pairwise LLM evaluation.</div>
+    <a href="http://arxiv.org/abs/2602.13112v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">AdaGrad-Diff: A New Version of the Adaptive Gradient Algorithm</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: The AdaGrad-Diff algorithm and its use of gradient differences for step-size adaptation.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13104v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Random Forests as Statistical Procedures: Design, Variance, and Dependence</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: The design-based perspective on Random Forests, including variance decomposition and structural dependence.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13098v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Barron-Wiener-Laguerre models</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Barron-Wiener-Laguerre models for causal operator learning and uncertainty quantification.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13087v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">EXCODER: EXplainable Classification Of DiscretE time series Representations</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Using discrete latent representations to improve explainability of time series classification models.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13075v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Unified Multi-Domain Graph Pre-training for Homogeneous and Heterogeneous Graphs via Domain-Specific…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study the domain-specific expert encoding for unified graph pre-training.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Unified Multi-Domain Graph Pre-training for Homogeneous and Heterogeneous Graphs via Domain-Specific Expe…</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Unified multi-domain graph pre-training strategies and domain-specific expert encoding.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13073v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">LCSB: Layer-Cyclic Selective Backpropagation for Memory-Efficient On-Device LLM Fine-Tuning</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Try this tool: LCSB (Layer-Cyclic Selective Backpropagation) for memory-efficient LLM fine-tuning on limited hardware.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13069v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Memory-Efficient Structured Backpropagation for On-Device LLM Fine-Tuning</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Try this tool: MeSP (Memory-Efficient Structured Backpropagation) for reducing memory footprint during LLM fine-tuning.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13055v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Curriculum-DPO++: Direct Preference Optimization via Data and Model Curricula for Text-to-Image Gene…</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Learn about Curriculum-DPO++ and the application of curricula in preference optimization.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Curriculum-DPO++: Direct Preference Optimization via Data and Model Curricula for Text-to-Image Generatio…</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Curriculum learning strategies for optimizing generative models and their potential application to sequential data.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13052v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Quantization-Aware Collaborative Inference for Large Embodied AI Models</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Study quantization-aware collaborative inference for large AI models.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Quantization-Aware Collaborative Inference for Large Embodied AI Models</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Quantization-aware collaborative inference and joint optimization of computation and quantization for efficiency.</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
-    <a href="http://arxiv.org/abs/2602.13033v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Buy versus Build an LLM: A Decision Framework for Governments</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Review the decision framework for 'buy versus build' LLM strategies.</div>
+    <a href="http://arxiv.org/abs/2602.13045v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Geometric Manifold Rectification for Imbalanced Learning</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Test in RealTest: Implement GMR as a data preprocessing step for imbalanced financial datasets before training classification mode…</div>
   </div>
 </div>
-
-<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
-  <span style="background:#f5f5f5;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:12px;white-space:nowrap;flex-shrink:0;">1/10</span>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13040v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">TCRL: Temporal-Coupled Adversarial Training for Robust Constrained Reinforcement Learning in Worst-Case S…</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Temporal-coupled adversarial training for robust reinforcement learning and its application in worst-case scenarios.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13035v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Look Inward to Explore Outward: Learning Temperature Policy from LLM Internal States via Hierarchical RL</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Hierarchical reinforcement learning for adaptive control of exploration parameters (like sampling temperature) in gene…</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#f5f5f5;color:#757575;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">4/10</span>
   <div>
     <a href="http://arxiv.org/abs/2602.13030v1" target="_blank" rel="noopener"
-       style="color:#333;font-size:13px;text-decoration:none;font-weight:500;">Resource-Efficient Gesture Recognition through Convexified Attention</a>
-    <div style="font-size:11px;color:#888;margin-top:2px;">Read the method: Understand the convexified attention mechanism for resource-efficient applications.</div>
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Resource-Efficient Gesture Recognition through Convexified Attention</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Convexified attention mechanisms for resource-efficient deep learning models.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13197v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Imitating What Works: Simulation-Filtered Modular Policy Learning from Human Videos</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Test in RealTest: Develop a simulation-based filter to validate potential trading signals generated by other strategies, discardin…</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13191v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">CoPE-VideoLM: Codec Primitives For Efficient Video Language Models</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Using video codec primitives (motion vectors, residuals) for efficient representation learning in sequential data.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13174v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Learning functional components of PDEs from data using neural networks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Using neural networks to learn functional components of differential equations from data.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13168v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Realistic Face Reconstruction from Facial Embeddings via Diffusion Models</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Face Embedding Mapping (FEM) and its use of diffusion models for reconstruction from embeddings.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13166v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Optimal Take-off under Fuzzy Clearances</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Integration of Optimal Control with Fuzzy Rule-Based Systems for adaptive constraint handling.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13165v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Asynchronous Verified Semantic Caching for Tiered LLM Architectures</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Try this tool: Krites for asynchronous verified semantic caching in LLM architectures.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13156v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">In-Context Autonomous Network Incident Response: An End-to-End Large Language Model Agent Approach</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Designing LLM agents with integrated perception, reasoning, planning, and action capabilities.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13135v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Constrained Assumption-Based Argumentation Frameworks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Constrained Assumption-Based Argumentation (CABA) frameworks and their formalization.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13110v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">SCOPE: Selective Conformal Optimized Pairwise LLM Judging</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: SCOPE (Selective Conformal Optimized Pairwise Evaluation) for statistically guaranteed LLM judging.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.1303v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">R-Diverse: Mitigating Diversity Illusion in Self-Play LLM Training</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: R-Diverse method for mitigating diversity illusion in self-play LLM training.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13093v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Consistency of Large Reasoning Models Under Multi-Turn Attacks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: The vulnerability of large reasoning models to multi-turn adversarial attacks and the failure of standard confidence-b…</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13071v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Bus-Conditioned Zero-Shot Trajectory Generation via Task Arithmetic</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Task Arithmetic for zero-shot generation and its application to trajectory prediction.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13062v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Backdoor Attacks on Contrastive Continual Learning for IoT Systems</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Backdoor attacks on Contrastive Continual Learning and defense strategies for adaptive systems.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">3/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13033v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Buy versus Build an LLM: A Decision Framework for Governments</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: A decision framework for evaluating 'buy vs. build' strategies for Large Language Models.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13171v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Learning functional components of PDEs from data using neural networks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Using neural networks to learn functional components of differential equations from data.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13106v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Which Algorithms Can Graph Neural Networks Learn?</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Theoretical framework for understanding the algorithmic learning capabilities of Graph Neural Networks.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13088v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">How cyborg propaganda reshapes collective action</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Skip — Focuses on social and political implications of AI, not directly applicable to quantitative trading strategies.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13061v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Diverging Flows: Detecting Extrapolations in Conditional Generation</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Diverging Flows for detecting extrapolations and handling off-manifold inputs in conditional generation models.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13042v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">GPTZero: Robust Detection of LLM-Generated Texts</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Try this tool: GPTZero for detecting LLM-generated text.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">2/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13047v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Can we trust AI to detect healthy multilingual English speakers among the cognitively impaired cohort in …</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Investigating and mitigating bias in AI models for speech analysis, particularly concerning multilingual speakers.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">1/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13134v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Barron-Wiener-Laguerre models</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Barron-Wiener-Laguerre models for causal operator learning and uncertainty quantification.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">1/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13131v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Learning functional components of PDEs from data using neural networks</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Using neural networks to learn functional components of differential equations from data.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">1/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13110v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">SCOPE: Selective Conformal Optimized Pairwise LLM Judging</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: SCOPE (Selective Conformal Optimized Pairwise Evaluation) for statistically guaranteed LLM judging.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">1/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13075v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Unified Multi-Domain Graph Pre-training for Homogeneous and Heterogeneous Graphs via Domain-Specific Expe…</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Unified multi-domain graph pre-training strategies and domain-specific expert encoding.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">1/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13047v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Can we trust AI to detect healthy multilingual English speakers among the cognitively impaired cohort in …</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: Investigating and mitigating bias in AI models for speech analysis, particularly concerning multilingual speakers.</div>
+  </div>
+</div>
+<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+  <span style="background:#fafafa;color:#bdbdbd;font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">1/10</span>
+  <div>
+    <a href="http://arxiv.org/abs/2602.13033v1" target="_blank" rel="noopener"
+       style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">Buy versus Build an LLM: A Decision Framework for Governments</a>
+    <div style="font-size:11px;color:#999;margin-top:3px;">Learn this: A decision framework for evaluating 'buy vs. build' strategies for Large Language Models.</div>
   </div>
 </div>
 
-<div style="margin-top:56px;padding-top:16px;border-top:1px solid #e0e0e0;font-size:11px;color:#bbb;text-align:center;">
-  Auto-generated · Gemini gemini-2.5-flash-lite · arXiv API · Last 96 hours
+<div style="margin-top:56px;padding-top:16px;border-top:1px solid #e8e8e8;font-size:10px;color:#ccc;text-align:center;">
+  Auto-generated · Gemini gemini-2.5-flash-lite · arXiv API · Last 96h
 </div>
-
 </body>
 </html>

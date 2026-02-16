@@ -21,7 +21,7 @@ MAX_AI            = 40
 GEMINI_MODEL      = "gemini-2.5-flash-lite"
 OUTPUT_FILE       = "docs/index.html"
 FULL_TEXT_TIMEOUT = 10    # seconds per paper HTML fetch
-FULL_TEXT_CHARS   = 5000  # chars extracted per paper
+FULL_TEXT_CHARS   = 3000  # chars extracted per paper
 
 TRADER_PROFILE = """
 You write a sharp, no-bullshit morning briefing for a retail quantitative trader.
@@ -167,6 +167,45 @@ def build_prompt(papers: list) -> str:
     return "\n".join(lines)
 
 
+def extract_json(text: str) -> dict:
+    """Robustly extract JSON from Gemini response, handling extra text."""
+    text = text.strip()
+    # Strategy 1: direct parse
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    # Strategy 2: find { and match closing brace by counting
+    start = text.find("{")
+    if start >= 0:
+        depth = 0
+        for i, ch in enumerate(text[start:], start):
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start: i + 1])
+                    except json.JSONDecodeError:
+                        break
+    raise ValueError(f"No valid JSON found in response. First 300 chars: {text[:300]}")
+
+
+def normalize_result(raw) -> dict:
+    """Ensure result is always {"papers": [...]}."""
+    if isinstance(raw, list):
+        return {"papers": raw}
+    if isinstance(raw, dict):
+        # Gemini sometimes returns {"paper": [...]} or {"results": [...]}
+        if "papers" not in raw:
+            for key in raw:
+                if isinstance(raw[key], list):
+                    return {"papers": raw[key]}
+        return raw
+    return {"papers": []}
+
+
 def call_gemini(prompt: str) -> dict:
     api_key = os.environ.get("GEMINI_API_KEY", "")
     if not api_key:
@@ -180,12 +219,7 @@ def call_gemini(prompt: str) -> dict:
             temperature=0.1,
         ),
     )
-    text = resp.text.strip()
-    if not text.startswith("{"):
-        m = re.search(r"\{.*\}", text, re.DOTALL)
-        if m:
-            text = m.group()
-    return json.loads(text)
+    return normalize_result(extract_json(resp.text))
 
 
 # ── HTML rendering ─────────────────────────────────────────────────────────────
