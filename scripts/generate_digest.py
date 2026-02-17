@@ -299,17 +299,29 @@ def render_row(p: dict) -> str:
 </div>"""
 
 
-def generate_html(data: dict, quant_count: int, ai_count: int,
+def render_ai_link(p: dict) -> str:
+    return (f'<div style="padding:7px 0;border-bottom:1px solid #f5f5f5;">'
+            f'<a href="{p.get("url","#")}" target="_blank" rel="noopener" '
+            f'style="color:#444;font-size:13px;text-decoration:none;">{p.get("title","")}</a>'
+            f'</div>')
+
+
+def generate_html(data: dict, quant_count: int, ai_raw: list,
                   full_text_count: int, total_papers: int) -> str:
     papers  = data.get("papers", [])
     top     = [p for p in papers if p.get("score", 0) >= 7]
     quant   = [p for p in papers if p.get("category") == "quant" and p.get("score", 0) < 7]
-    ai_list = [p for p in papers if p.get("category") == "ai"    and p.get("score", 0) < 7]
+    ai_count = len(ai_raw)
 
     def section(items, card_min=5):
         if not items:
             return '<p style="color:#ccc;font-size:13px;padding:12px 0;">No papers in this section.</p>'
         return "\n".join(render_card(p) if p.get("score",0) >= card_min else render_row(p) for p in items)
+
+    def ai_section():
+        if not ai_raw:
+            return '<p style="color:#ccc;font-size:13px;padding:12px 0;">No AI papers today.</p>'
+        return "\n".join(render_ai_link(p) for p in ai_raw)
 
     date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
     weekday  = datetime.now(timezone.utc).strftime("%A")
@@ -348,8 +360,8 @@ def generate_html(data: dict, quant_count: int, ai_count: int,
 <h2>Quantitative Finance — Remaining</h2>
 {section(quant)}
 
-<h2>AI & Automation — Remaining</h2>
-{section(ai_list)}
+<h2>AI & Automation — Reference links</h2>
+{ai_section()}
 
 <div style="margin-top:56px;padding-top:16px;border-top:1px solid #e8e8e8;font-size:10px;color:#ccc;text-align:center;">
   Auto-generated · Gemini {GEMINI_MODEL} · arXiv API · Last {HOURS_BACK}h
@@ -378,21 +390,18 @@ def main() -> None:
 
     if not quant_new and not ai_new:
         print("No recent papers. Generating empty page.")
-        html = generate_html({"papers": []}, 0, 0, 0, 0)
+        html = generate_html({"papers": []}, 0, [], 0, 0)
         os.makedirs("docs", exist_ok=True)
         open(OUTPUT_FILE, "w", encoding="utf-8").write(html)
         return
 
-    # 2. Fetch full paper text for all papers
-    all_papers = (
-        [dict(p, category="quant") for p in quant_new] +
-        [dict(p, category="ai")    for p in ai_new]
-    )
-    total = len(all_papers)
+    # 2. Fetch full text — quant papers only (AI shown as links, no analysis needed)
+    quant_papers = [dict(p, category="quant") for p in quant_new]
+    total = len(quant_papers)
     full_count = 0
 
-    print(f"[{ts()}] Fetching full text for {total} papers...")
-    for i, p in enumerate(all_papers):
+    print(f"[{ts()}] Fetching full text for {total} quant papers...")
+    for i, p in enumerate(quant_papers):
         content, is_full = fetch_full_text(p)
         p["content"]  = content
         p["is_full"]  = is_full
@@ -404,17 +413,15 @@ def main() -> None:
 
     print(f"[{ts()}] Full text: {full_count}/{total} papers")
 
-    # 3. Gemini analysis  (cap at 30 papers to keep prompt within output budget)
-    MAX_GEMINI = 30
-    gemini_papers = all_papers[:MAX_GEMINI]
-    print(f"[{ts()}] Sending to Gemini ({GEMINI_MODEL}) — {len(gemini_papers)} papers...")
-    prompt = build_prompt(gemini_papers)
+    # 3. Gemini analysis — quant papers only
+    print(f"[{ts()}] Sending to Gemini ({GEMINI_MODEL}) — {len(quant_papers)} quant papers...")
+    prompt = build_prompt(quant_papers)
     result = call_gemini(prompt)
     analyzed = len(result.get("papers", []))
     print(f"         -> {analyzed} papers analyzed")
 
-    # 4. Generate HTML
-    html = generate_html(result, len(quant_new), len(ai_new), full_count, total)
+    # 4. Generate HTML  (ai_new passed raw — rendered as a plain link list)
+    html = generate_html(result, len(quant_new), ai_new, full_count, total)
     os.makedirs("docs", exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as fh:
         fh.write(html)
