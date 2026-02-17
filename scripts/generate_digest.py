@@ -15,11 +15,30 @@ from google.genai import types
 # ── Config ─────────────────────────────────────────────────────────────────────
 QUANT_CATEGORIES  = ["q-fin.CP", "q-fin.PM", "q-fin.ST", "q-fin.RM", "q-fin.TR"]
 AI_CATEGORIES     = ["cs.AI", "cs.LG"]
-BIO_CATEGORIES    = ["q-bio.GN", "q-bio.MN", "q-bio.NC", "q-bio.OT", "q-bio.PE"]
 HOURS_BACK        = 96
 MAX_QUANT         = 40
-MAX_AI            = 15   # analüüsitakse Geminiga, piiratud arv
-MAX_BIO           = 10
+MAX_AI            = 15
+MAX_LONGEVITY     = 10
+
+LONGEVITY_KEYWORDS = [
+    "aging", "ageing", "longevity", "lifespan", "healthspan", "life span",
+    "senescence", "senolytic", "senolytics", "senomorphic",
+    "rejuvenation", "rejuvenate", "epigenetic clock", "biological age",
+    "NAD+", "NMN", "NR ", "sirtuins", "sirtuin", "SIRT1", "SIRT3",
+    "rapamycin", "mTOR", "autophagy", "mitophagy",
+    "telomere", "telomerase", "telomere length",
+    "caloric restriction", "calorie restriction", "fasting", "intermittent fasting",
+    "metformin", "acarbose", "spermidine",
+    "inflammation aging", "inflammaging", "neurodegeneration",
+    "mitochondria aging", "mitochondrial dysfunction",
+    "gut microbiome aging", "microbiome longevity",
+    "exercise longevity", "sleep aging", "sleep health",
+    "protein aggregation aging", "proteostasis",
+    "IGF-1", "growth hormone aging", "insulin signaling aging",
+    "DNA damage aging", "oxidative stress aging",
+    "stem cell aging", "tissue rejuvenation",
+    "geroprotector", "geroprotective",
+]
 GEMINI_MODEL      = "gemini-2.5-flash-lite"
 OUTPUT_FILE       = "docs/index.html"
 FULL_TEXT_TIMEOUT = 10    # seconds per paper HTML fetch
@@ -69,6 +88,50 @@ Analüüsi AINULT minu antud artikleid. ÄRA lisa artikleid oma teadmistest.
 """.strip()
 
 
+LONGEVITY_PROFILE = """
+Sa kirjutad EESTI KEELES hommikuse longevity/tervise kokkuvõtte inimesele kelle eesmärk
+on elada võimalikult kaua ja tervena (Bryan Johnson stiil — superhuman biohacking).
+Sul on iga artikli TÄISTEKST. Kasuta TEGELIKKE NUMBREID ja TÄPSEID LEIDE.
+
+LUGEJA PROFIIL:
+- Eesmärk: maksimaalne eluiga, optimaalne tervis, bioloogilise vanuse vähendamine
+- Huvid: senolytics, NAD+/NMN/NR, rapamycin, epigeneetilised kellad, autophagy,
+  põletik, mitokondrid, soolestiku mikrobioom, uni, treening, toitumine
+- Küsib alati: "Kas see töötab inimestel? Mida ma saan TÄNA teha?"
+
+KIRJUTAMISREEGLID:
+  avastus: 2-3 lauset. TÄPSED leiud numbritega.
+    - Mis organism (hiired? inimesed? rakud?), mis vanusevahemik
+    - Mis interventsioon (annus, kestus, meetod)
+    - Mis tulemus (% eluea pikendus, biomarkeri muutus, haiguse risk jne)
+    HEA: "Hiirtel (18 kuu vanused) vähendas rapamycin 4mg/kg/päevas 12 nädalat
+    põletikunäitajaid (IL-6) 43% ja pikendas ülejäänud eluiga 9% (p<0.01)."
+    HALB: "Leiti et rapamycin võib pikendada eluiga." — KEELATUD.
+
+  selgitus: 1-2 lauset. Kas see on inimestele rakendatav? Mis piirangud?
+
+  toiming: Üks konkreetne tegevus:
+    • "Testi enda peal: [täpne protokoll — annus, aeg, mida mõõta]"
+    • "Jälgi uuringut: [mida oodata, millal tulemused]"
+    • "Proovi tööriista/testi: [mis test/tööriist + link]"
+    • "Õpi: [konkreetne mehhanism miks see oluline]"
+    • "Jäta vahele — [põhjus miks ei rakendu]"
+
+SKOOR (1-10):
+  Inimestele rakendatavus (0-3): kas töötab inimestel (mitte ainult hiirtel/rakkudel)?
+  Leiu kvaliteet       (0-3): konkreetsed numbrid ja mehhanismid?
+  Robustsus            (0-2): RCT või suur kohort? Replikeeritud?
+  Uudsus               (0-2): uus tipu/protokoll/mehhanism?
+
+Tagasta AINULT kehtiv JSON, ilma markdown-ita.
+{"papers":[{"id":"...","title":"...","url":"...","category":"longevity","score":8,
+"avastus":"...","selgitus":"...","toiming":"...","can_implement":true,"tags":["NAD+"]}]}
+
+Sorteeri skoori järgi kahanevalt.
+ANALÜÜSI AINULT minu antud artikleid.
+""".strip()
+
+
 # ── arXiv fetch ────────────────────────────────────────────────────────────────
 def fetch_arxiv(categories: list, max_results: int = 80) -> list:
     cat_query = "+OR+".join(f"cat:{c}" for c in categories)
@@ -104,6 +167,48 @@ def filter_recent(papers: list, hours: int) -> list:
         except Exception:
             pass
     return result
+
+
+# ── bioRxiv fetch ──────────────────────────────────────────────────────────────
+def fetch_biorxiv_longevity(days_back: int = 4, max_results: int = 10) -> list:
+    """Fetch recent bioRxiv papers filtered by longevity keywords."""
+    end_date   = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    start_date = (datetime.now(timezone.utc) - timedelta(days=days_back)).strftime("%Y-%m-%d")
+    papers = []
+    cursor = 0
+    kw_lower = [k.lower() for k in LONGEVITY_KEYWORDS]
+
+    while len(papers) < max_results:
+        url = f"https://api.biorxiv.org/details/biorxiv/{start_date}/{end_date}/{cursor}/json"
+        try:
+            resp = requests.get(url, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+        except Exception:
+            break
+        collection = data.get("collection", [])
+        if not collection:
+            break
+        for item in collection:
+            text = (item.get("title", "") + " " + item.get("abstract", "")).lower()
+            if any(kw in text for kw in kw_lower):
+                doi = item.get("doi", "")
+                papers.append({
+                    "id":        doi,
+                    "url":       f"https://www.biorxiv.org/content/{doi}",
+                    "title":     item.get("title", "").strip(),
+                    "abstract":  item.get("abstract", "").strip().replace("\n", " "),
+                    "published": item.get("date", ""),
+                    "content":   item.get("abstract", "").strip()[:2000],
+                    "is_full":   False,
+                })
+                if len(papers) >= max_results:
+                    break
+        total = data.get("messages", [{}])[0].get("total", 0)
+        cursor += 100
+        if cursor >= int(total):
+            break
+    return papers
 
 
 # ── Full text extraction ───────────────────────────────────────────────────────
@@ -158,8 +263,8 @@ def fetch_full_text(paper: dict) -> tuple:
 
 
 # ── Gemini ─────────────────────────────────────────────────────────────────────
-def build_prompt(papers: list) -> str:
-    lines = [TRADER_PROFILE, ""]
+def build_prompt(papers: list, profile: str = None) -> str:
+    lines = [profile or TRADER_PROFILE, ""]
     for p in papers:
         source_label = "[FULL TEXT]" if p.get("is_full") else "[ABSTRACT ONLY]"
         lines += [
@@ -333,7 +438,7 @@ def generate_html(quant_result: dict, ai_result: dict, bio_result: dict,
     time_str = datetime.now(timezone.utc).strftime("%H:%M UTC")
 
     bio_section = f"""
-<h2>Tervis &amp; Bioloogia — Remaining</h2>
+<h2>Longevity &amp; Tervis — bioRxiv</h2>
 {section(bio)}
 """ if bio_count > 0 else ""
 
@@ -358,7 +463,7 @@ def generate_html(quant_result: dict, ai_result: dict, bio_result: dict,
   <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#666;">
     <span>📊 {quant_count} quant</span>
     <span>🤖 {ai_count} AI</span>
-    <span>🧬 {bio_count} bio</span>
+    <span>🧬 {bio_count} longevity</span>
     <span>📄 {full_text_count}/{total_papers} full text</span>
     <span>⭐ {len(top)} top picks</span>
     <span style="color:#bbb;">Generated {time_str}</span>
@@ -410,8 +515,19 @@ def fetch_and_analyze(papers_raw: list, category: str, label: str) -> tuple:
     return result, full_count
 
 
+def analyze_longevity(papers: list) -> dict:
+    """Run Gemini analysis on bioRxiv longevity papers using LONGEVITY_PROFILE."""
+    if not papers:
+        return {"papers": []}
+    print(f"[{ts()}] Sending to Gemini — {len(papers)} longevity papers...")
+    result = call_gemini(build_prompt(papers, profile=LONGEVITY_PROFILE))
+    print(f"         -> {len(result.get('papers', []))} analyzed")
+    time.sleep(10)
+    return result
+
+
 def main() -> None:
-    # 1. Fetch abstracts from all categories
+    # 1. Fetch abstracts
     print(f"[{ts()}] Fetching quant papers...")
     quant_new = filter_recent(fetch_arxiv(QUANT_CATEGORIES, max_results=80), HOURS_BACK)[:MAX_QUANT]
     print(f"         -> {len(quant_new)} papers")
@@ -422,11 +538,11 @@ def main() -> None:
     print(f"         -> {len(ai_new)} papers")
     time.sleep(2)
 
-    print(f"[{ts()}] Fetching bio/health papers...")
-    bio_new = filter_recent(fetch_arxiv(BIO_CATEGORIES, max_results=40), HOURS_BACK)[:MAX_BIO]
-    print(f"         -> {len(bio_new)} papers")
+    print(f"[{ts()}] Fetching longevity papers from bioRxiv...")
+    longevity_new = fetch_biorxiv_longevity(days_back=4, max_results=MAX_LONGEVITY)
+    print(f"         -> {len(longevity_new)} papers")
 
-    if not quant_new and not ai_new and not bio_new:
+    if not quant_new and not ai_new and not longevity_new:
         print("No recent papers. Generating empty page.")
         html = generate_html({"papers": []}, {"papers": []}, {"papers": []}, 0, 0, 0, 0, 0)
         os.makedirs("docs", exist_ok=True)
@@ -434,17 +550,17 @@ def main() -> None:
         return
 
     # 2. Fetch full text + Gemini analysis per category
-    quant_result, quant_full = fetch_and_analyze(quant_new, "quant", "quant")
-    ai_result,    ai_full    = fetch_and_analyze(ai_new,    "ai",    "AI")
-    bio_result,   bio_full   = fetch_and_analyze(bio_new,   "bio",   "bio")
+    quant_result, quant_full = fetch_and_analyze(quant_new,    "quant", "quant")
+    ai_result,    ai_full    = fetch_and_analyze(ai_new,       "ai",    "AI")
+    longevity_result         = analyze_longevity(longevity_new)
 
-    total_full  = quant_full + ai_full + bio_full
-    total_count = len(quant_new) + len(ai_new) + len(bio_new)
+    total_full  = quant_full + ai_full
+    total_count = len(quant_new) + len(ai_new)
 
     # 3. Generate HTML
     html = generate_html(
-        quant_result, ai_result, bio_result,
-        len(quant_new), len(ai_new), len(bio_new),
+        quant_result, ai_result, longevity_result,
+        len(quant_new), len(ai_new), len(longevity_new),
         total_full, total_count,
     )
     os.makedirs("docs", exist_ok=True)
