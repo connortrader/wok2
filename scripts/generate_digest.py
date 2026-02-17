@@ -15,9 +15,11 @@ from google.genai import types
 # ── Config ─────────────────────────────────────────────────────────────────────
 QUANT_CATEGORIES  = ["q-fin.CP", "q-fin.PM", "q-fin.ST", "q-fin.RM", "q-fin.TR"]
 AI_CATEGORIES     = ["cs.AI", "cs.LG"]
+BIO_CATEGORIES    = ["q-bio.GN", "q-bio.MN", "q-bio.NC", "q-bio.OT", "q-bio.PE"]
 HOURS_BACK        = 96
 MAX_QUANT         = 40
-MAX_AI            = 40
+MAX_AI            = 15   # analüüsitakse Geminiga, piiratud arv
+MAX_BIO           = 10
 GEMINI_MODEL      = "gemini-2.5-flash-lite"
 OUTPUT_FILE       = "docs/index.html"
 FULL_TEXT_TIMEOUT = 10    # seconds per paper HTML fetch
@@ -310,26 +312,30 @@ def render_ai_link(p: dict) -> str:
             f'</div>')
 
 
-def generate_html(data: dict, quant_count: int, ai_raw: list,
+def generate_html(quant_result: dict, ai_result: dict, bio_result: dict,
+                  quant_count: int, ai_count: int, bio_count: int,
                   full_text_count: int, total_papers: int) -> str:
-    papers  = data.get("papers", [])
-    top     = [p for p in papers if p.get("score", 0) >= 7]
-    quant   = [p for p in papers if p.get("category") == "quant" and p.get("score", 0) < 7]
-    ai_count = len(ai_raw)
+    all_papers = (quant_result.get("papers", []) +
+                  ai_result.get("papers", []) +
+                  bio_result.get("papers", []))
+    top   = [p for p in all_papers if p.get("score", 0) >= 7]
+    quant = [p for p in quant_result.get("papers", []) if p.get("score", 0) < 7]
+    ai    = [p for p in ai_result.get("papers", []) if p.get("score", 0) < 7]
+    bio   = [p for p in bio_result.get("papers", []) if p.get("score", 0) < 7]
 
-    def section(items, card_min=5):
+    def section(items):
         if not items:
-            return '<p style="color:#ccc;font-size:13px;padding:12px 0;">No papers in this section.</p>'
-        return "\n".join(render_card(p) if p.get("score",0) >= card_min else render_row(p) for p in items)
-
-    def ai_section():
-        if not ai_raw:
-            return '<p style="color:#ccc;font-size:13px;padding:12px 0;">No AI papers today.</p>'
-        return "\n".join(render_ai_link(p) for p in ai_raw)
+            return '<p style="color:#ccc;font-size:13px;padding:12px 0;">Täna artikleid pole.</p>'
+        return "\n".join(render_card(p) if p.get("score", 0) >= 5 else render_row(p) for p in items)
 
     date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
     weekday  = datetime.now(timezone.utc).strftime("%A")
     time_str = datetime.now(timezone.utc).strftime("%H:%M UTC")
+
+    bio_section = f"""
+<h2>Tervis &amp; Bioloogia — Remaining</h2>
+{section(bio)}
+""" if bio_count > 0 else ""
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -352,21 +358,22 @@ def generate_html(data: dict, quant_count: int, ai_raw: list,
   <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#666;">
     <span>📊 {quant_count} quant</span>
     <span>🤖 {ai_count} AI</span>
-    <span>📄 {full_text_count}/{total_papers} full papers read</span>
+    <span>🧬 {bio_count} bio</span>
+    <span>📄 {full_text_count}/{total_papers} full text</span>
     <span>⭐ {len(top)} top picks</span>
     <span style="color:#bbb;">Generated {time_str}</span>
   </div>
 </div>
 
 <h2>Top Picks — Worth your time</h2>
-{section(top, card_min=0) if top else '<p style="color:#ccc;font-size:13px;padding:12px 0;">No high-scoring papers today.</p>'}
+{section(top) if top else '<p style="color:#ccc;font-size:13px;padding:12px 0;">Täna kõrgeid skoore pole.</p>'}
 
-<h2>Quantitative Finance — Remaining</h2>
+<h2>Kvantitatiivne rahandus — Remaining</h2>
 {section(quant)}
 
-<h2>AI & Automation — Reference links</h2>
-{ai_section()}
-
+<h2>AI &amp; Automatiseerimine — Remaining</h2>
+{section(ai)}
+{bio_section}
 <div style="margin-top:56px;padding-top:16px;border-top:1px solid #e8e8e8;font-size:10px;color:#ccc;text-align:center;">
   Auto-generated · Gemini {GEMINI_MODEL} · arXiv API · Last {HOURS_BACK}h
 </div>
@@ -379,53 +386,67 @@ def ts() -> str:
     return datetime.now().strftime("%H:%M:%S")
 
 
+def fetch_and_analyze(papers_raw: list, category: str, label: str) -> tuple:
+    """Fetch full text for papers and run Gemini analysis. Returns (result_dict, full_count)."""
+    papers = [dict(p, category=category) for p in papers_raw]
+    full_count = 0
+    print(f"[{ts()}] Fetching full text for {len(papers)} {label} papers...")
+    for i, p in enumerate(papers):
+        content, is_full = fetch_full_text(p)
+        p["content"] = content
+        p["is_full"] = is_full
+        if is_full:
+            full_count += 1
+        status = "full" if is_full else "abstract"
+        print(f"         [{i+1:2d}/{len(papers)}] {status} — {p['title'][:55]}...")
+        time.sleep(0.3)
+    print(f"[{ts()}] Full text: {full_count}/{len(papers)}")
+    if not papers:
+        return {"papers": []}, 0
+    print(f"[{ts()}] Sending to Gemini — {len(papers)} {label} papers...")
+    result = call_gemini(build_prompt(papers))
+    print(f"         -> {len(result.get('papers', []))} analyzed")
+    time.sleep(10)  # polite pause between Gemini calls
+    return result, full_count
+
+
 def main() -> None:
-    # 1. Fetch abstracts
+    # 1. Fetch abstracts from all categories
     print(f"[{ts()}] Fetching quant papers...")
-    quant_raw = fetch_arxiv(QUANT_CATEGORIES, max_results=80)
-    quant_new = filter_recent(quant_raw, HOURS_BACK)[:MAX_QUANT]
+    quant_new = filter_recent(fetch_arxiv(QUANT_CATEGORIES, max_results=80), HOURS_BACK)[:MAX_QUANT]
     print(f"         -> {len(quant_new)} papers")
     time.sleep(2)
 
     print(f"[{ts()}] Fetching AI papers...")
-    ai_raw = fetch_arxiv(AI_CATEGORIES, max_results=100)
-    ai_new = filter_recent(ai_raw, HOURS_BACK)[:MAX_AI]
+    ai_new = filter_recent(fetch_arxiv(AI_CATEGORIES, max_results=60), HOURS_BACK)[:MAX_AI]
     print(f"         -> {len(ai_new)} papers")
+    time.sleep(2)
 
-    if not quant_new and not ai_new:
+    print(f"[{ts()}] Fetching bio/health papers...")
+    bio_new = filter_recent(fetch_arxiv(BIO_CATEGORIES, max_results=40), HOURS_BACK)[:MAX_BIO]
+    print(f"         -> {len(bio_new)} papers")
+
+    if not quant_new and not ai_new and not bio_new:
         print("No recent papers. Generating empty page.")
-        html = generate_html({"papers": []}, 0, [], 0, 0)
+        html = generate_html({"papers": []}, {"papers": []}, {"papers": []}, 0, 0, 0, 0, 0)
         os.makedirs("docs", exist_ok=True)
         open(OUTPUT_FILE, "w", encoding="utf-8").write(html)
         return
 
-    # 2. Fetch full text — quant papers only (AI shown as links, no analysis needed)
-    quant_papers = [dict(p, category="quant") for p in quant_new]
-    total = len(quant_papers)
-    full_count = 0
+    # 2. Fetch full text + Gemini analysis per category
+    quant_result, quant_full = fetch_and_analyze(quant_new, "quant", "quant")
+    ai_result,    ai_full    = fetch_and_analyze(ai_new,    "ai",    "AI")
+    bio_result,   bio_full   = fetch_and_analyze(bio_new,   "bio",   "bio")
 
-    print(f"[{ts()}] Fetching full text for {total} quant papers...")
-    for i, p in enumerate(quant_papers):
-        content, is_full = fetch_full_text(p)
-        p["content"]  = content
-        p["is_full"]  = is_full
-        if is_full:
-            full_count += 1
-        status = "full" if is_full else "abstract"
-        print(f"         [{i+1:2d}/{total}] {status} — {p['title'][:55]}...")
-        time.sleep(0.3)  # polite to arXiv
+    total_full  = quant_full + ai_full + bio_full
+    total_count = len(quant_new) + len(ai_new) + len(bio_new)
 
-    print(f"[{ts()}] Full text: {full_count}/{total} papers")
-
-    # 3. Gemini analysis — quant papers only
-    print(f"[{ts()}] Sending to Gemini ({GEMINI_MODEL}) — {len(quant_papers)} quant papers...")
-    prompt = build_prompt(quant_papers)
-    result = call_gemini(prompt)
-    analyzed = len(result.get("papers", []))
-    print(f"         -> {analyzed} papers analyzed")
-
-    # 4. Generate HTML  (ai_new passed raw — rendered as a plain link list)
-    html = generate_html(result, len(quant_new), ai_new, full_count, total)
+    # 3. Generate HTML
+    html = generate_html(
+        quant_result, ai_result, bio_result,
+        len(quant_new), len(ai_new), len(bio_new),
+        total_full, total_count,
+    )
     os.makedirs("docs", exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as fh:
         fh.write(html)
