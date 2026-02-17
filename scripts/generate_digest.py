@@ -193,17 +193,25 @@ def extract_json(text: str) -> dict:
 
 
 def normalize_result(raw) -> dict:
-    """Ensure result is always {"papers": [...]}."""
+    """Ensure result is always {"papers": [list of dicts]}."""
     if isinstance(raw, list):
-        return {"papers": raw}
-    if isinstance(raw, dict):
+        result = {"papers": raw}
+    elif isinstance(raw, dict):
         # Gemini sometimes returns {"paper": [...]} or {"results": [...]}
         if "papers" not in raw:
             for key in raw:
                 if isinstance(raw[key], list):
-                    return {"papers": raw[key]}
-        return raw
-    return {"papers": []}
+                    result = {"papers": raw[key]}
+                    break
+            else:
+                result = raw
+        else:
+            result = raw
+    else:
+        result = {"papers": []}
+    # Filter out any non-dict items Gemini may have mixed in (e.g. "...remaining omitted")
+    result["papers"] = [p for p in result.get("papers", []) if isinstance(p, dict)]
+    return result
 
 
 def call_gemini(prompt: str) -> dict:
@@ -217,8 +225,12 @@ def call_gemini(prompt: str) -> dict:
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             temperature=0.1,
+            max_output_tokens=16000,
         ),
     )
+    if not resp.text:
+        finish = (resp.candidates[0].finish_reason if resp.candidates else "unknown")
+        raise ValueError(f"Gemini returned empty response. finish_reason={finish}")
     return normalize_result(extract_json(resp.text))
 
 
@@ -392,9 +404,11 @@ def main() -> None:
 
     print(f"[{ts()}] Full text: {full_count}/{total} papers")
 
-    # 3. Gemini analysis
-    print(f"[{ts()}] Sending to Gemini ({GEMINI_MODEL})...")
-    prompt = build_prompt(all_papers)
+    # 3. Gemini analysis  (cap at 30 papers to keep prompt within output budget)
+    MAX_GEMINI = 30
+    gemini_papers = all_papers[:MAX_GEMINI]
+    print(f"[{ts()}] Sending to Gemini ({GEMINI_MODEL}) — {len(gemini_papers)} papers...")
+    prompt = build_prompt(gemini_papers)
     result = call_gemini(prompt)
     analyzed = len(result.get("papers", []))
     print(f"         -> {analyzed} papers analyzed")
