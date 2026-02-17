@@ -24,42 +24,46 @@ FULL_TEXT_TIMEOUT = 10    # seconds per paper HTML fetch
 FULL_TEXT_CHARS   = 3000  # chars extracted per paper
 
 TRADER_PROFILE = """
-You write a sharp, no-bullshit morning briefing for a retail quantitative trader.
-You have the FULL TEXT of each paper (intro + results + conclusion), not just the abstract.
-Use the ACTUAL numbers, findings, and methods from the paper — not vague summaries.
+Sa kirjutad EESTI KEELES hommikuse kokkuvõtte kvantitatiivse kaupleja jaoks.
+Sul on iga artikli TÄISTEKST (sissejuhatus + tulemused + järeldused), mitte ainult abstrakt.
+Kasuta TEGELIKKE NUMBREID ja TÄPSEID MEETODEID tekstist — mitte üldisi kokkuvõtteid.
 
-TRADER PROFILE:
-- Trades US stocks only. No crypto, forex, options, futures, HFT, non-US markets.
-- Uses RealTest (Marsten Parker) + Norgate end-of-day data (price, volume, fundamentals)
-- Goals: portfolio of diversified strategies, robust backtesting, signal generation
-- Python: intermediate. Can code moderately complex strategies.
-- Interests: momentum, mean reversion, factor models, portfolio optimization, drawdown control
-- AI interest: practical productivity tools, AI agents that work today, longevity/health findings
+KAUPLEJA PROFIIL:
+- Kaupleb ainult USA aktsiatega. Ei tegele krüpto, forex, optsioonid, futuurid, HFT, välisturud.
+- Kasutab RealTest (Marsten Parker) + Norgate päevalõpu andmed (hind, maht, fundamentaalid)
+- Eesmärgid: mitmekesine strateegiate portfell, robustne backtesting, signaalide genereerimine
+- Python: kesktase. Suudab kodeerida mõõdukalt keerulisi strateegiaid.
+- Huvid: momentum, mean reversion, faktormudelid, portfelli optimeerimine, drawdown kontroll
 
-WRITING RULES — be concrete, use numbers from the paper:
-  discovery:  One sentence. "They found X outperformed Y by Z% over N years."
-              Use real numbers from the paper. If no numbers, describe the method concisely.
-  insight:    1-2 sentences. What this means for this trader specifically.
-              Connect to their actual workflow (RealTest, US stocks, portfolio).
-  action:     Pick exactly one:
-              • "Test in RealTest: [specific step — what signal, what filter, what data]"
-              • "Try this tool: [tool name + what it does + link if mentioned]"
-              • "Learn this: [specific concept or method worth studying]"
-              • "Skip — [one concrete reason why not applicable]"
+KIRJUTAMISREEGLID — ole ÜLITÄPNE, kasuta numbreid tekstist:
 
-SCORING (1-10, sum of):
-  Implementability (0-3): testable in RealTest with Norgate price/vol/fundamentals?
-  Finding quality  (0-3): specific, measurable result with evidence?
-  Robustness       (0-2): multiple periods or out-of-sample tested?
-  Novelty          (0-2): new idea for this trader?
+  avastus: 2-3 lauset. Mis täpselt tehti ja mis tulemus saadi.
+    HEA NÄIDE: "Testiti momentum strateegiat S&P 500 aktsiadel aastatel 1990-2020.
+    Entry: aktsia sulgemine 52-nädala kõrgeima taseme 5% piires. Hold: 6 kuud.
+    Tulemus: Sharpe 0.87 vs buy-and-hold 0.43. Max drawdown -23% vs -51%."
+    HALB NÄIDE: "Leiti et momentum töötab hästi." — KEELATUD.
 
-Return ONLY valid JSON — no markdown, no extra text.
+  selgitus: 1-2 lauset. Mida see konkreetselt selle kaupleja jaoks tähendab.
+
+  toiming: Üks täpne tegevus. Kui artiklis on backtest, anna TÄPSED reeglid:
+    • "Testi RealTest-is: Entry kui [täpne tingimus], Filter [täpne filter],
+      Stop loss [täpne reegel], Hold [aeg]. Tulemus paberis: Sharpe X, CAGR Y%."
+    • "Proovi tööriista: [nimi] — [mida teeb] — [link kui olemas]"
+    • "Õpi: [konkreetne tehnika] — [miks kasulik, mis kasu]"
+    • "Jäta vahele — [üks konkreetne põhjus]"
+
+SKOOR (1-10, summa):
+  Implementeeritavus (0-3): kas saab testida RealTest-is Norgate hind/maht/fundamentaalidega?
+  Leiuse kvaliteet   (0-3): kas on konkreetsed mõõdetavad tulemused?
+  Robustsus          (0-2): kas testiti mitut perioodi või out-of-sample?
+  Uudsus             (0-2): kas on uus idee selle kaupleja jaoks?
+
+Tagasta AINULT kehtiv JSON — ilma markdown-ita, ilma lisatekstita.
 {"papers":[{"id":"...","title":"...","url":"...","category":"quant or ai","score":7,
-"discovery":"They found...","insight":"This means...","action":"Test in RealTest: ...",
-"can_implement":true,"tags":["momentum"]}]}
+"avastus":"...","selgitus":"...","toiming":"...","can_implement":true,"tags":["momentum"]}]}
 
-Sort by score descending.
-ONLY analyze papers I provided. Do NOT add papers from your own knowledge.
+Sorteeri skoori järgi kahanevalt.
+Analüüsi AINULT minu antud artikleid. ÄRA lisa artikleid oma teadmistest.
 """.strip()
 
 
@@ -250,7 +254,7 @@ def render_card(p: dict) -> str:
     cat_color = "#1565c0" if cat == "quant" else "#6a1b9a"
     can = p.get("can_implement", False)
     impl_color = "#2e7d32" if can else "#9e9e9e"
-    impl_text  = "Implementable in RealTest" if can else "Not directly implementable"
+    impl_text  = "Implementeeritav RealTest-is" if can else "Ei ole otseselt implementeeritav"
     tags = " ".join(
         f'<span style="background:#f0f0f0;color:#777;padding:1px 7px;border-radius:3px;font-size:11px;">{t}</span>'
         for t in p.get("tags", [])
@@ -263,17 +267,17 @@ def render_card(p: dict) -> str:
        style="color:#111;font-weight:600;font-size:15px;text-decoration:none;line-height:1.4;">{p.get('title','')}</a>
   </div>
   <div style="border-top:1px solid #f2f2f2;padding-top:12px;">
-    <div style="display:grid;grid-template-columns:110px 1fr;gap:0;margin-bottom:2px;">
-      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Avastati</span>
-      <span style="font-size:14px;color:#111;line-height:1.65;padding:10px 0;border-bottom:1px solid #f5f5f5;">{p.get('discovery','')}</span>
+    <div style="display:grid;grid-template-columns:100px 1fr;gap:0;margin-bottom:2px;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Avastus</span>
+      <span style="font-size:14px;color:#111;line-height:1.7;padding:10px 0;border-bottom:1px solid #f5f5f5;">{p.get('avastus','')}</span>
     </div>
-    <div style="display:grid;grid-template-columns:110px 1fr;gap:0;margin-bottom:2px;">
-      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Mida see tahendab</span>
-      <span style="font-size:13px;color:#444;line-height:1.65;padding:10px 0;border-bottom:1px solid #f5f5f5;">{p.get('insight','')}</span>
+    <div style="display:grid;grid-template-columns:100px 1fr;gap:0;margin-bottom:2px;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Tähendus</span>
+      <span style="font-size:13px;color:#444;line-height:1.65;padding:10px 0;border-bottom:1px solid #f5f5f5;">{p.get('selgitus','')}</span>
     </div>
-    <div style="display:grid;grid-template-columns:110px 1fr;gap:0;">
-      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Mida teha</span>
-      <span style="font-size:13px;color:#1b5e20;line-height:1.65;padding:10px 0;font-weight:500;">{p.get('action','')}</span>
+    <div style="display:grid;grid-template-columns:100px 1fr;gap:0;">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#bbb;padding:10px 0;">Toiming</span>
+      <span style="font-size:13px;color:#1b5e20;line-height:1.7;padding:10px 0;font-weight:500;">{p.get('toiming','')}</span>
     </div>
   </div>
   <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -288,13 +292,13 @@ def render_row(p: dict) -> str:
     score = p.get("score", 0)
     bg, fg = score_style(score)
     title = p.get("title", "")[:105]
-    action = p.get("action", "")[:130]
+    toiming = p.get("toiming", "")[:150]
     return f"""<div style="display:flex;gap:12px;padding:10px 4px;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
   <span style="background:{bg};color:{fg};font-weight:700;padding:1px 8px;border-radius:3px;font-size:11px;white-space:nowrap;flex-shrink:0;">{score}/10</span>
   <div>
     <a href="{p.get('url','#')}" target="_blank" rel="noopener"
        style="color:#444;font-size:13px;text-decoration:none;font-weight:500;">{title}{'…' if len(p.get('title',''))>105 else ''}</a>
-    <div style="font-size:11px;color:#999;margin-top:3px;">{action}{'…' if len(p.get('action',''))>130 else ''}</div>
+    <div style="font-size:11px;color:#999;margin-top:3px;">{toiming}{'…' if len(p.get('toiming',''))>150 else ''}</div>
   </div>
 </div>"""
 
