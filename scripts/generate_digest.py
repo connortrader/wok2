@@ -20,25 +20,56 @@ MAX_QUANT         = 40
 MAX_AI            = 15
 MAX_LONGEVITY     = 10
 
-LONGEVITY_KEYWORDS = [
-    "aging", "ageing", "longevity", "lifespan", "healthspan", "life span",
-    "senescence", "senolytic", "senolytics", "senomorphic",
-    "rejuvenation", "rejuvenate", "epigenetic clock", "biological age",
-    "NAD+", "NMN", "NR ", "sirtuins", "sirtuin", "SIRT1", "SIRT3",
-    "rapamycin", "mTOR", "autophagy", "mitophagy",
-    "telomere", "telomerase", "telomere length",
-    "caloric restriction", "calorie restriction", "fasting", "intermittent fasting",
-    "metformin", "acarbose", "spermidine",
-    "inflammation aging", "inflammaging", "neurodegeneration",
-    "mitochondria aging", "mitochondrial dysfunction",
-    "gut microbiome aging", "microbiome longevity",
-    "exercise longevity", "sleep aging", "sleep health",
-    "protein aggregation aging", "proteostasis",
-    "IGF-1", "growth hormone aging", "insulin signaling aging",
-    "DNA damage aging", "oxidative stress aging",
-    "stem cell aging", "tissue rejuvenation",
+# Strong keywords — one match in title OR abstract is enough
+LONGEVITY_STRONG = [
+    "longevity", "lifespan", "healthspan", "life span", "life extension",
+    "senolytic", "senolytics", "senomorphic", "cellular senescence",
+    "rejuvenation", "epigenetic reprogramming", "partial reprogramming",
+    "epigenetic clock", "biological age", "methylation age", "dunedinpace",
+    "NAD+", "NMN", "nicotinamide mononucleotide", "NR supplementation",
+    "sirtuin", "SIRT1", "SIRT3", "SIRT6",
+    "rapamycin", "mTOR inhibition", "mTORC1",
+    "autophagy induction", "mitophagy",
+    "telomere length", "telomerase activation",
+    "caloric restriction", "calorie restriction", "intermittent fasting longevity",
+    "metformin aging", "acarbose", "spermidine supplementation",
+    "fisetin", "quercetin senolytic", "dasatinib",
     "geroprotector", "geroprotective",
+    "stem cell rejuvenation", "tissue rejuvenation",
+    "hallmarks of aging", "aging hallmarks",
+    "inflammaging", "chronic low-grade inflammation aging",
+    "mitochondrial dysfunction aging",
+    "proteostasis aging", "protein aggregation aging",
 ]
+
+# Weak keywords — need 2+ matches, or 1 match in title
+LONGEVITY_WEAK = [
+    "aging", "ageing", "senescence", "age-related", "age related",
+    "lifespan extension", "healthspan extension",
+    "telomere", "autophagy", "mTOR",
+    "NAD", "sirtuins", "mitochondria", "oxidative stress",
+    "gut microbiome", "sleep quality", "exercise aging",
+    "IGF-1", "growth hormone", "insulin signaling",
+    "DNA damage repair", "genomic instability",
+]
+
+
+def longevity_score(title: str, abstract: str) -> int:
+    """Return relevance score for longevity filtering. 0 = not relevant."""
+    title_l    = title.lower()
+    abstract_l = abstract.lower()
+    score = 0
+    # Strong keyword in title = very high signal
+    for kw in LONGEVITY_STRONG:
+        if kw.lower() in title_l:
+            score += 3
+        elif kw.lower() in abstract_l:
+            score += 1
+    # Weak keyword only if also supported by strong signal
+    for kw in LONGEVITY_WEAK:
+        if kw.lower() in title_l:
+            score += 1
+    return score
 GEMINI_MODEL      = "gemini-2.5-flash-lite"
 OUTPUT_FILE       = "docs/index.html"
 FULL_TEXT_TIMEOUT = 10    # seconds per paper HTML fetch
@@ -169,17 +200,12 @@ def filter_recent(papers: list, hours: int) -> list:
     return result
 
 
-# ── bioRxiv fetch ──────────────────────────────────────────────────────────────
-def fetch_biorxiv_longevity(days_back: int = 4, max_results: int = 10) -> list:
-    """Fetch recent bioRxiv papers filtered by longevity keywords."""
-    end_date   = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    start_date = (datetime.now(timezone.utc) - timedelta(days=days_back)).strftime("%Y-%m-%d")
-    papers = []
-    cursor = 0
-    kw_lower = [k.lower() for k in LONGEVITY_KEYWORDS]
-
-    while len(papers) < max_results:
-        url = f"https://api.biorxiv.org/details/biorxiv/{start_date}/{end_date}/{cursor}/json"
+# ── bioRxiv / medRxiv fetch ────────────────────────────────────────────────────
+def _fetch_rxiv(server: str, start_date: str, end_date: str, scan_limit: int = 400) -> list:
+    """Fetch and score papers from biorxiv or medrxiv by longevity relevance."""
+    scored, cursor = [], 0
+    while cursor < scan_limit:
+        url = f"https://api.biorxiv.org/details/{server}/{start_date}/{end_date}/{cursor}/json"
         try:
             resp = requests.get(url, timeout=30)
             resp.raise_for_status()
@@ -190,25 +216,58 @@ def fetch_biorxiv_longevity(days_back: int = 4, max_results: int = 10) -> list:
         if not collection:
             break
         for item in collection:
-            text = (item.get("title", "") + " " + item.get("abstract", "")).lower()
-            if any(kw in text for kw in kw_lower):
+            title    = item.get("title", "").strip()
+            abstract = item.get("abstract", "").strip()
+            sc = longevity_score(title, abstract)
+            if sc >= 2:          # minimum relevance threshold
                 doi = item.get("doi", "")
-                papers.append({
+                scored.append({
+                    "_score":    sc,
                     "id":        doi,
-                    "url":       f"https://www.biorxiv.org/content/{doi}",
-                    "title":     item.get("title", "").strip(),
-                    "abstract":  item.get("abstract", "").strip().replace("\n", " "),
+                    "url":       f"https://www.{server}.org/content/{doi}",
+                    "title":     title,
+                    "abstract":  abstract.replace("\n", " "),
                     "published": item.get("date", ""),
-                    "content":   item.get("abstract", "").strip()[:2000],
+                    "content":   abstract[:2000],
                     "is_full":   False,
+                    "source":    server,
                 })
-                if len(papers) >= max_results:
-                    break
-        total = data.get("messages", [{}])[0].get("total", 0)
+        total = int((data.get("messages") or [{}])[0].get("total", 0))
         cursor += 100
-        if cursor >= int(total):
+        if cursor >= total:
             break
-    return papers
+    # Sort by relevance score, return all (caller will merge + limit)
+    scored.sort(key=lambda x: -x["_score"])
+    return scored
+
+
+def fetch_longevity_papers(days_back: int = 4, max_results: int = 12) -> list:
+    """Fetch and rank longevity papers from bioRxiv + medRxiv by relevance."""
+    end_date   = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    start_date = (datetime.now(timezone.utc) - timedelta(days=days_back)).strftime("%Y-%m-%d")
+
+    bio = _fetch_rxiv("biorxiv", start_date, end_date, scan_limit=500)
+    time.sleep(1)
+    med = _fetch_rxiv("medrxiv", start_date, end_date, scan_limit=500)
+
+    # Merge, deduplicate, re-sort by score (medRxiv gets +1 bonus — human data)
+    seen, merged = set(), []
+    for p in med:
+        if p["id"] not in seen:
+            seen.add(p["id"])
+            p["_score"] += 1   # human clinical data bonus
+            merged.append(p)
+    for p in bio:
+        if p["id"] not in seen:
+            seen.add(p["id"])
+            merged.append(p)
+
+    merged.sort(key=lambda x: -x["_score"])
+    top = merged[:max_results]
+    # Remove internal score key before returning
+    for p in top:
+        p.pop("_score", None)
+    return top
 
 
 # ── Full text extraction ───────────────────────────────────────────────────────
@@ -538,8 +597,8 @@ def main() -> None:
     print(f"         -> {len(ai_new)} papers")
     time.sleep(2)
 
-    print(f"[{ts()}] Fetching longevity papers from bioRxiv...")
-    longevity_new = fetch_biorxiv_longevity(days_back=4, max_results=MAX_LONGEVITY)
+    print(f"[{ts()}] Fetching longevity papers from bioRxiv + medRxiv...")
+    longevity_new = fetch_longevity_papers(days_back=4, max_results=MAX_LONGEVITY)
     print(f"         -> {len(longevity_new)} papers")
 
     if not quant_new and not ai_new and not longevity_new:
